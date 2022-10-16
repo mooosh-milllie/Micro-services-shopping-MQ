@@ -115,9 +115,10 @@ module.exports = (app, channel) => {
 
 
             const response = {
-                product: data.data.product,
-                unit: data.data.qty
+                product: data,
+                unit: data.unit
             }
+            
 
             return res.status(200).json(response);
 

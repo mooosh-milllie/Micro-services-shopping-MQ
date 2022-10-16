@@ -64,6 +64,7 @@ const ErrorHandler = async(err,req,res,next) => {
         }else{
             //process exit // terriablly wrong with flow need restart
         }
+        console.log(err);
         return res.status(err.statusCode).json({'message': err.message})
     }
     next();
