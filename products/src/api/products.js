@@ -27,11 +27,11 @@ module.exports = (app, channel) => {
         const type = req.params.type;
 
         try {
-            const { data } = await service.GetProductsByCategory(type)
+            const { data } = await service.GetProductsByCategory(type);
             return res.status(200).json(data);
 
         } catch (err) {
-            next(err)
+            next(err);
         }
 
     });
@@ -72,13 +72,14 @@ module.exports = (app, channel) => {
         const productId = req.body._id;
         try {
             // Get payload to send to customer service
-            const { data } = await service.GetProductById(productId);
+            const { data } = await service.GetProductPayload(_id, { productId: productId }, 'ADD_TO_WISHLIST');;
             // PublishCustomerEvent(data);
+            console.log('Productssss::', data);
             await PublishMessages(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
 
-            return res.status(200).json(data.data);
+            return res.status(200).json(data.data.product);
         } catch (err) {
-
+            throw new Error(err);
         }
     });
 
@@ -89,11 +90,11 @@ module.exports = (app, channel) => {
 
         try {
             // Get payload to send to customer service
-            const { data } = await service.GetProductById(_id, { productId: productId }, 'REMOVE_FROM_WISHLIST');
+            const { data } = await service.GetProductPayload(_id, { productId: productId }, 'REMOVE_FROM_WISHLIST');
             // PublishCustomerEvent(data);
             PublishMessages(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
 
-            return res.status(200).json(wishlist);
+            return res.status(200).json(data.data.product);
         } catch (err) {
             next(err)
         }
@@ -102,11 +103,11 @@ module.exports = (app, channel) => {
 
     app.put('/cart', UserAuth, async (req, res, next) => {
 
-        const { _id} = req.body;
+        const { _id} = req.user;
 
         try {
             // Get payload to send to customer service
-            const { data } = await service.GetProductById(_id, { productId: req.body._id }, 'ADD_TO_CART');
+            const { data } = await service.GetProductPayload(_id, { productId: req.body._id }, 'ADD_TO_CART');
             // PublishCustomerEvent(data);
             PublishMessages(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));
 
@@ -115,8 +116,8 @@ module.exports = (app, channel) => {
 
 
             const response = {
-                product: data,
-                unit: data.unit
+                product: data.data.product,
+                unit: data.data.qty
             }
             
 
@@ -132,7 +133,7 @@ module.exports = (app, channel) => {
         const { _id } = req.user;
         
         try {
-            const { data } = await service.GetProductById(_id, { productId: req.body._id }, 'REMOVE_FROM_CART');
+            const { data } = await service.GetProductPayload(_id, { productId: req.body._id }, 'REMOVE_FROM_CART');
 
             // PublishCustomerEvent(data);
             PublishMessages(channel, CUSTOMER_BINDING_KEY, JSON.stringify(data));

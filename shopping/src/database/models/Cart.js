@@ -13,9 +13,10 @@ const CartSchema = new Schema({
         banner: {type: String},
         type: {type: String},
         unit: {type: Number},
+        price: Number,
         supplier: {type: String}
       },
-      unit: {type: Number, require: true}   
+      unit: {type: Number, require: true}
     }
   ]
 },

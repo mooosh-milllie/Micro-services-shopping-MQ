@@ -131,7 +131,8 @@ class CustomerService {
 
     async ManageOrder(customerId, order){
         try {
-            const orderResult = await this.repository.AddOrderToProfile(customerId, order);
+            const orderResult = await  this.repository.AddOrderToProfile(customerId, order);
+            console.log('Profile', orderResult)
             return FormateData(orderResult);
         } catch (err) {
             throw new APIError('Data Not found', err)
@@ -139,7 +140,8 @@ class CustomerService {
     }
 
     async SubscribeEvents(payload){
- 
+        payload = JSON.parse(payload);
+        console.log("CUSTOMER PAYLOAD", payload)
         const { event, data } =  payload;
 
         const { userId, product, order, qty } = data;
@@ -154,9 +156,6 @@ class CustomerService {
                 break;
             case 'REMOVE_FROM_CART':
                 this.ManageCart(userId,product,qty, true);
-                break;
-            case 'TEST':
-                console.log("Working.... Subscribe");
                 break;
             case 'CREATE_ORDER':
                 this.ManageOrder(userId,order);

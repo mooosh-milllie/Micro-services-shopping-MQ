@@ -43,7 +43,7 @@ class ShoppingRepository {
             if (cartItems.length > 0) {
                 
                 cartItems.map((item) => {
-                    if (item.product._id.toString() === id.toString()) {
+                    if (item.product._id.toString() === _id.toString()) {
                         if (isRemove) {
                             cartItems.splice(cartItems.indexOf(item), 1);
                         }else {
@@ -75,22 +75,23 @@ class ShoppingRepository {
     async CreateNewOrder(customerId, txnId){
 
         //check transaction for payment Status
-        
+        console.log('CUSTOMERID TAXID', customerId, txnId)
         try{
-            const cart = await CartModel.findById({customerId: customerId});
+            const cart = await CartModel.findOne({customerId});
     
             if(cart){
                 
                 let amount = 0;   
     
                 let cartItems = cart.items;
-    
                 if(cartItems.length > 0){
+
                     //process Order
                     cartItems.map(item => {
-                        amount += parseInt(item.product.price) *  parseInt(item.unit);   
+                        console.log('ITEM:::', item)
+                        amount += Number(item.product.price) *  Number(item.product.unit);   
                     });
-        
+            
                     const orderId = uuidv4();
         
                     const order = new OrderModel({
@@ -105,6 +106,7 @@ class ShoppingRepository {
                     cart.items = [];
                     
                     const orderResult = await order.save();
+                    console.log('Saved ORDER RESULT', orderResult)
     
                     await cart.save();
     

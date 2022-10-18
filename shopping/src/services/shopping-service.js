@@ -21,12 +21,11 @@ class ShoppingService {
         const { _id, txnNumber } = userInput
 
         // Verify the txn number with payment logs
-        
-
 
         
         try {
             const orderResult = await this.repository.CreateNewOrder(_id, txnNumber);
+            console.log('Order Result::', orderResult)
             return FormateData(orderResult);    
         } catch (err) {
             throw new APIError('Data Not found', err)
@@ -44,7 +43,7 @@ class ShoppingService {
     }
     
 
-    async managecart(customerId, item, qty, isRemove) {
+    async ManageCart(customerId, item, qty, isRemove) {
         try {
             const cartResult = await this.repository.AddCartItem(customerId, item, qty, isRemove);
             return FormateData(cartResult);
@@ -54,7 +53,8 @@ class ShoppingService {
     }
 
     async SubscribeEvents(payload){
- 
+        payload = JSON.parse(payload);
+        console.log('Payload Events', payload);
         const { event, data } =  payload;
 
         const { userId, product, qty } = data;

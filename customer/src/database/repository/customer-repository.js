@@ -56,7 +56,7 @@ class CustomerRepository {
     }
 
     async FindCustomerById({ id }){
-
+        console.log('Find Customer ID::::', id);
         try {
             const existingCustomer = await CustomerModel.findById(id).populate('address')
             return existingCustomer;
@@ -121,10 +121,11 @@ class CustomerRepository {
 
 
     async AddCartItem(customerId, {_id, name, price, banner}, qty, isRemove){
-        
+        console.log(customerId);
         try{
 
             const profile = await CustomerModel.findById(customerId).populate('cart');
+            console.log(profile)
     
             if(profile){ 
      
@@ -165,7 +166,7 @@ class CustomerRepository {
             throw new Error('Unable to add to cart!');
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
         }
 
     }
@@ -175,6 +176,7 @@ class CustomerRepository {
         try{
 
             const profile = await CustomerModel.findById(customerId);
+            console.log(profile);
 
             if(profile){ 
                 
@@ -193,7 +195,7 @@ class CustomerRepository {
             throw new Error('Unable to add to order!');
 
         }catch(err){
-            throw APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
+            throw new APIError('API Error', STATUS_CODES.INTERNAL_ERROR, 'Unable to Create Customer')
         }
         
     }

@@ -13,11 +13,13 @@ module.exports = (app, channel) => {
         const { _id } = req.user;
         const { txnNumber } = req.body;
 
-
+        console.log('Shopping id txnnumber::', _id, txnNumber)
         try {
             const { data } = await service.PlaceOrder({_id, txnNumber});
+            console.log('Shopping Data::', data)
 
             const payload = await service.GetOrderPayload(_id, data, "CREATE_ORDER");
+            console.log('Shopping Payload:::', payload);
             // PublishCustomerEvent(payload);
             PublishMessages(channel, CUSTOMER_BINDING_KEY, JSON.stringify(payload))
             return res.status(200).json(data);
